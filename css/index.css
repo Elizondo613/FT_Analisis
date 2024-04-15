@@ -1,0 +1,60 @@
+.header {
+    background-color: rgb(50, 163, 201); /* Color de fondo del encabezado */
+    position: fixed; /* Fija el encabezado en la parte superior de la pantalla */
+    top: 0; /* Coloca el encabezado en la parte superior */
+    left: 0; /* Asegura que el encabezado esté pegado al borde izquierdo */
+    width: 100%; /* Ancho completo del encabezado */
+    z-index: 999; /* Coloca el encabezado por encima de otros elementos */
+    height: 60px; /* Altura del encabezado */
+}
+
+.sidenav {
+    position: fixed; /* Fija la barra lateral en la pantalla */
+    top: 60px; /* Asegura que la barra lateral esté pegada a la parte inferior del encabezado */
+    left: 0; /* Asegura que la barra lateral esté pegada al borde izquierdo */
+    width: 200px; /* Ancho de la barra lateral */
+    height: calc(100% - 60px); /* Altura completa de la barra lateral menos la altura del encabezado */
+    background-color: black; /* Color de fondo de la barra lateral */
+    z-index: 1; /* Coloca la barra lateral por debajo del encabezado */
+    overflow-x: hidden; /* Oculta el desplazamiento horizontal */
+}
+  
+.logo {
+    float: right; /* Coloca el logo a la derecha */
+    /* Añade estilos adicionales según sea necesario */
+}
+  
+  /* Estilos para la barra de navegación */
+.navbar {
+    margin-top: 20px; /* Espacio desde el header */
+}
+  
+.navbar ul {
+    list-style-type: none; /* Elimina los estilos de la lista */
+    margin: 0;
+    padding: 0;
+}
+  
+.navbar ul li {
+    display: block; /* Muestra los elementos en bloque */
+    margin-bottom: 10px; /* Espaciado entre elementos */
+}
+  
+.navbar ul li a {
+    color: #fff; /* Color del texto */
+    text-decoration: none; /* Elimina el subrayado del enlace */
+    padding: 10px; /* Espaciado interno */
+    display: block; /* Muestra los enlaces en bloque */
+}
+  
+.navbar ul li a:hover {
+    background-color: #333; /* Color de fondo al pasar el mouse */
+}
+
+/* Media query para hacer la navbar responsive */
+@media screen and (max-width: 768px) {
+    .navbar {
+      width: 100%; /* Ancho completo en pantallas pequeñas */
+      height: auto; /* Altura automática */
+    }
+}

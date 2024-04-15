@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventario</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Estilos personalizados -->
+  <link rel="stylesheet" href="../css/proveedor.css">
+</head>
+<body>
+
+<body>
+    <header class="header">
+        <!-- Espacio para el logo en la parte derecha -->
+        <div class="logo">
+          <!-- Inserta tu logo aquí -->
+        </div>
+      </header>
+<div class="sidenav">
+    <nav class="navbar">
+      <ul>
+        <li><a href="/html/proveedor.html">Proveedor</a></li>
+        <li><a href="/html/inventario.html">Inventario</a></li>
+        <li><a href="#">Compra</a></li>
+        <li><a href="#">Venta</a></li>
+      </ul>
+    </nav>
+  </div>
+
+<!-- Contenido -->
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <!-- Formulario de Inventario -->
+          <h4 class="card-title">Ingresar Producto</h4>
+          <form id="productoForm">
+            <div class="form-group">
+              <label for="nombre">Nombre del producto</label>
+              <input type="text" class="form-control" id="nombre" name="nombre" required>
+            </div>
+            <div class="form-group">
+                <label for="stock">Stock</label>
+                <input type="number" class="form-control" id="stock" name="stock" required>
+              </div>
+              <div class="form-group">
+                <label for="descr">Descripción</label>
+                <input type="text" class="form-control" id="descr" name="descr" required>
+              </div>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <button id="btnMostrarProductos" class="btn btn-primary">Mostrar productos</button>
+            <div id="productosContainer"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JavaScript y scripts personalizados -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Script personalizado para manejar el envío del formulario -->
+<script>
+  // Capturar el evento submit del formulario
+  document.getElementById('productoForm').addEventListener('submit', async function(event) {
+    event.preventDefault(); // Prevenir el envío del formulario por defecto
+
+    // Obtener los datos del formulario
+    const formData = new FormData(this);
+    console.log('Datos del formulario:', formData);
+
+    try {
+      // Enviar la petición POST al backend
+      console.log('Enviando solicitud POST al backend...');
+      const response = await fetch('http://localhost:4000/inventario/productos', {
+        method: 'POST',
+        body: formData
+      });
+      console.log('Respuesta del servidor:', response);
+
+      if (response.ok) {
+        // Producto ingresado correctamente
+        alert('Producto ingresado correctamente');
+      } else {
+        // Error al ingresar
+        alert('Error al ingresar el producto');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error al procesar la solicitud');
+    }
+  });
+
+//Listar todos los productos
+  document.getElementById('btnMostrarProductos').addEventListener('click', async () => {
+    try {
+        // Realizar la solicitud GET para obtener todos los productos
+        const response = await fetch('http://localhost:4000/inventario/productos');
+        const productos = await response.json();
+
+        // Obtener el contenedor donde se mostrarán los productos
+        const productosContainer = document.getElementById('productosContainer');
+
+        // Limpiar el contenedor
+        productosContainer.innerHTML = '';
+
+        // Iterar sobre los productos y mostrarlos en el contenedor
+        productos.forEach(producto => {
+            const productoHTML = `
+                <div>
+                    <p>ID: ${producto._id}</p>
+                    <p>Nombre: ${producto.nombre}</p>
+                    <p>Stock: ${producto.stock}</p>
+                    <p>Descripción: ${producto.descripcion}</p>
+                    <button class="btnEliminar btn-danger" data-id="${producto._id}">Borrar</button>
+                </div>
+            `;
+            productosContainer.insertAdjacentHTML('beforeend', productoHTML);
+        });
+
+        // Agregar event listeners a los botones de "Borrar"
+            document.querySelectorAll('.btnEliminar').forEach(btnEliminar => {
+            btnEliminar.addEventListener('click', async () => {
+            const productoId = btnEliminar.dataset.id;
+            await eliminarProducto(productoId);
+            });
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error al obtener los productos');
+    }
+});
+
+// Función para eliminar un producto
+async function eliminarProducto(productoId) {
+    try {
+        const response = await fetch(`http://localhost:4000/inventario/productos/${productoId}`, {
+            method: 'DELETE'
+        });
+        if (response.ok) {
+            alert('Producto eliminado correctamente');
+            // Actualizar la lista de productos después de eliminar
+            document.getElementById('btnMostrarProductos').click();
+        } else {
+            alert('Error al eliminar el producto');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error al procesar la solicitud');
+    }
+}
+</script>
+</body>
+</html>

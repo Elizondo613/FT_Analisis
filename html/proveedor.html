@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Proveedor</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Estilos personalizados -->
+  <link rel="stylesheet" href="../css/proveedor.css">
+</head>
+<body>
+
+<body>
+    <header class="header">
+        <!-- Espacio para el logo en la parte derecha -->
+        <div class="logo">
+          <!-- Inserta tu logo aquí -->
+        </div>
+      </header>
+<div class="sidenav">
+    <nav class="navbar">
+      <ul>
+        <li><a href="/html/proveedor.html">Proveedor</a></li>
+        <li><a href="/html/inventario.html">Inventario</a></li>
+        <li><a href="#">Compra</a></li>
+        <li><a href="#">Venta</a></li>
+      </ul>
+    </nav>
+  </div>
+
+<!-- Contenido -->
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <!-- Formulario de Proveedor -->
+          <h4 class="card-title">Ingresar Proveedor</h4>
+          <form id="proveedorForm">
+            <div class="form-group">
+              <label for="nombre">Nombre del proveedor</label>
+              <input type="text" class="form-control" id="nombre" name="nombre" required>
+            </div>
+            <div class="form-group">
+                <label for="apellido">Apellido del proveedor</label>
+                <input type="text" class="form-control" id="apellido" name="apellido" required>
+              </div>
+              <div class="form-group">
+                <label for="codigo">Código</label>
+                <input type="text" class="form-control" id="codigo" name="codigo" required>
+              </div>
+              <div class="form-group">
+                <label for="nit">NIT</label>
+                <input type="number" class="form-control" id="nit" name="nit" required>
+              </div>
+              <div class="form-group">
+                <label for="departamento">Departamento</label>
+                <input type="text" class="form-control" id="departamento" name="departamento" required>
+              </div>
+              <div class="form-group">
+                <label for="municipio">Municipio</label>
+                <input type="text" class="form-control" id="municipio" name="municipio" required>
+              </div>
+              <div class="form-group">
+                <label for="correo">Correo</label>
+                <input type="text" class="form-control" id="correo" name="correo" required>
+              </div>
+              <div class="form-group">
+                <label for="telefono">Teléfono</label>
+                <input type="number" class="form-control" id="telefono" name="telefono" required>
+              </div>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <button id="btnMostrarProveedores" class="btn btn-primary">Mostrar proveedores</button>
+            <div id="proveedoresContainer"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JavaScript y scripts personalizados -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Script personalizado para manejar el envío del formulario -->
+<script>
+  // Capturar el evento submit del formulario
+  document.getElementById('proveedorForm').addEventListener('submit', async function(event) {
+    event.preventDefault(); // Prevenir el envío del formulario por defecto
+
+    // Obtener los datos del formulario
+    const formData = new FormData(this);
+    console.log('Datos del formulario:', formData);
+
+    try {
+      // Enviar la petición POST al backend
+      console.log('Enviando solicitud POST al backend...');
+      const response = await fetch('http://localhost:4000/proveedor/proveedores', {
+        method: 'POST',
+        headers: {
+        'Content-type': 'application/json'
+        },
+        body: formData
+      });
+      console.log('Respuesta del servidor:', response);
+
+      if (response.ok) {
+        // Proveedor creado correctamente
+        alert('Proveedor creado correctamente');
+      } else {
+        // Error al crear el proveedor
+        alert('Error al crear el proveedor');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error al procesar la solicitud');
+    }
+  });
+
+//Listar todos los productos
+document.getElementById('btnMostrarProveedores').addEventListener('click', async () => {
+    try {
+        // Realizar la solicitud GET para obtener todos los proveedores
+        const response = await fetch('http://localhost:4000/proveedor/proveedores');
+        const proveedores = await response.json();
+
+        // Obtener el contenedor donde se mostrarán los proveedores
+        const proveedoresContainer = document.getElementById('proveedoresContainer');
+
+        // Limpiar el contenedor
+        proveedoresContainer.innerHTML = '';
+
+        // Iterar sobre los proveedores y mostrarlos en el contenedor
+        proveedores.forEach(proveedor => {
+            const proveedorHTML = `
+                <div>
+                    <p>ID: ${proveedor._id}</p>
+                    <p>Nombre: ${proveedor.nombre}</p>
+                    <p>Apellido: ${proveedor.apellido}</p>
+                    <p>Código: ${proveedor.codigo}</p>
+                    <p>NIT: ${proveedor.nit}</p>
+                    <p>Departamento: ${proveedor.departamento}</p>
+                    <p>Municipio: ${proveedor.municipio}</p>
+                    <p>Correo: ${proveedor.correo}</p>
+                    <p>Teléfono: ${proveedor.telefono}</p>
+                    <button class="btnEliminar btn-danger" data-id="${proveedor._id}">Borrar</button>
+                </div>
+            `;
+            proveedoresContainer.insertAdjacentHTML('beforeend', proveedorHTML);
+        });
+
+        // Agregar event listeners a los botones de "Borrar"
+            document.querySelectorAll('.btnEliminar').forEach(btnEliminar => {
+            btnEliminar.addEventListener('click', async () => {
+            const proveedorId = btnEliminar.dataset.id;
+            await eliminarProveedor(proveedorId);
+            });
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error al obtener los proveedor');
+    }
+});
+</script>
+</body>
+</html>
